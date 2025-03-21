@@ -135,6 +135,4 @@ The system supports hybrid retrieval by allowing the user to query only specific
 
 ---
 
-## ✅ Done!
 
-You’ve built a robust RAG pipeline capable of real-time, quarter-specific document retrieval with modular and extensible components.
