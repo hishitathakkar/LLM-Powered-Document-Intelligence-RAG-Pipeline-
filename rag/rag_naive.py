@@ -27,7 +27,7 @@ def naive_rag_search(query, documents, chunking_strategy="recursive"):
             chunked_docs.extend(recursive_character_split(doc))
         elif chunking_strategy == "token":
             chunked_docs.extend(token_text_split(doc))
-        elif chunking_strategy == "semantic":teamstea
+        elif chunking_strategy == "semantic":
             chunked_docs.extend(semantic_split(doc))
         else:
             raise ValueError("Invalid chunking strategy. Choose from: recursive, token, semantic")
