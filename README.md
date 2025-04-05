@@ -6,62 +6,12 @@ Codelab: https://hishitathakkar.github.io/LLM-Powered-Document-Intelligence-RAG-
 
 An end-to-end **Retrieval-Augmented Generation (RAG)** system that automates the ingestion, processing, and retrieval of **NVIDIA quarterly reports** using **Apache Airflow**, multiple **PDF parsers**, vector databases (**Pinecone**, **ChromaDB**), and a user-friendly **Streamlit + FastAPI interface**.
 
+---
+## 🧠 LLM-Powered RAG Pipeline Architecture
 
-
-flowchart LR
-    %% User Interaction
-    subgraph Frontend
-        User[User]
-        Streamlit[Streamlit]
-        FastAPI[FastAPI]
-        User --> Streamlit --> FastAPI
-    end
-
-    %% Airflow Pipeline
-    subgraph Airflow_Pipeline[Airflow Pipeline]
-        Airflow
-        RepoScraper[Repo Scraper]
-        GitIngestor[Git Ingestor]
-        Chunking[Chunking]
-        Embedding[Embedding]
-        Pinecone[Pinecone]
-        RAG[RAG Agent]
-
-        Airflow --> RepoScraper --> GitIngestor --> Chunking --> Embedding --> Pinecone --> RAG
-    end
-
-    %% AutoDoc AI Core
-    subgraph AutoDocAI_Core[AutoDoc AI Core]
-        AutoDoc[AutoDoc AI]
-        Diagram[Diagram file]
-        Codelab[Codelab file]
-        Readme[README file]
-        SnowflakeAgent[Snowflake Agent]
-
-        AutoDoc --> Diagram
-        AutoDoc --> Codelab
-        AutoDoc --> Readme
-        AutoDoc --> SnowflakeAgent
-    end
-
-    %% Deployment
-    subgraph Deployment[Deployment & Storage]
-        SnowflakeDB[Snowflake DB]
-        GitHub[GitHub Repo]
-        Actions[GitHub Actions]
-        Pages[GitHub Pages]
-
-        AutoDoc --> GitHub
-        GitHub --> Actions --> Pages
-        SnowflakeAgent --> SnowflakeDB
-    end
-
-    %% Connecting Core to Frontend and Pipeline
-    FastAPI --> AutoDoc
-    RAG --> AutoDoc
+![RAG Pipeline Architecture](llm-powered_rag_pipeline.png)
 
 ---
-
 ## 🚀 Project Summary
 
 We built an AI-powered pipeline that:
