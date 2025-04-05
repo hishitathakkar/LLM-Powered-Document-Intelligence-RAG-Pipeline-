@@ -1,0 +1,34 @@
+{
+  "environment": "web",
+  "format": "html",
+  "prefix": "https://storage.googleapis.com",
+  "mainga": "UA-49880327-14",
+  "updated": "2025-04-05T18:26:05-04:00",
+  "id": "llm-rag-codelab",
+  "duration": 0,
+  "title": "📘 Codelab: Building the LLM-Powered Document Intelligence RAG Pipeline",
+  "authors": "BigDataSystemsTeam5",
+  "summary": "Build and deploy a multi-agent LangGraph-based research assistant for NVIDIA’s quarterly reports.",
+  "source": "LLM_RAG_Codelab.md",
+  "theme": "",
+  "status": [
+    "published"
+  ],
+  "category": [
+    "ai",
+    "langgraph",
+    "research",
+    "pinecone",
+    "streamlit"
+  ],
+  "tags": [
+    "airflow",
+    "fastapi",
+    "langgraph",
+    "multi-agent",
+    "pinecone",
+    "streamlit",
+    "web"
+  ],
+  "url": "llm-rag-codelab"
+}

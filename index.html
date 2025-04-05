@@ -1,0 +1,178 @@
+
+<!doctype html>
+
+<html>
+<head>
+  <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+  <meta name="theme-color" content="#4F7DC9">
+  <meta charset="UTF-8">
+  <title>📘 Codelab: Building the LLM-Powered Document Intelligence RAG Pipeline</title>
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Source+Code+Pro:400|Roboto:400,300,400italic,500,700|Roboto+Mono">
+  <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+  <link rel="stylesheet" href="https://storage.googleapis.com/claat-public/codelab-elements.css">
+  <style>
+    .success {
+      color: #1e8e3e;
+    }
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <google-codelab-analytics gaid="UA-49880327-14"></google-codelab-analytics>
+  <google-codelab codelab-gaid=""
+                  id="llm-rag-codelab"
+                  title="📘 Codelab: Building the LLM-Powered Document Intelligence RAG Pipeline"
+                  environment="web"
+                  feedback-link="">
+    
+      <google-codelab-step label="🧠 Objective" duration="0">
+        <p>The goal of this project was to create an end-to-end system that could <strong>automatically ingest, parse, and retrieve information from NVIDIA&#39;s quarterly reports</strong>, using a combination of:</p>
+<ul>
+<li>📄 <strong>Document ingestion and parsing</strong></li>
+<li>🧠 <strong>Vector embedding and hybrid retrieval</strong></li>
+<li>🤖 <strong>LLM-powered answering</strong></li>
+<li>🔗 <strong>FastAPI + Streamlit</strong> interface</li>
+<li>⛓️ <strong>Orchestrated with Apache Airflow</strong></li>
+<li>🚀 <strong>Containerized for deployment</strong></li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="⚙️ Step-by-Step: How We Built It" duration="0">
+        <h2 is-upgraded>✅ Step 1: Problem Statement</h2>
+<p>We wanted to build a <strong>document intelligence pipeline</strong> that allows users to ask questions about NVIDIA&#39;s quarterly financial reports, and get answers backed by both unstructured and structured data — using a Retrieval-Augmented Generation (RAG) approach.</p>
+<h2 is-upgraded>✅ Step 2: Automated Data Ingestion (Airflow DAGs)</h2>
+<ul>
+<li>Implemented <strong>Airflow DAGs</strong> to automate the scraping of quarterly PDF reports from NVIDIA&#39;s website.</li>
+<li>Used <code>requests</code> and <code>BeautifulSoup</code> to scrape URLs.</li>
+<li>Downloaded PDFs and stored them in a local <code>data/</code> directory and later to <strong>S3</strong>.</li>
+<li>Scheduled this pipeline using Airflow (<code>airflow/dags/scrape_reports_dag.py</code>).</li>
+</ul>
+<p><strong>Outcome</strong>: We now had an automated, repeatable process to collect new data every quarter.</p>
+<h2 is-upgraded>✅ Step 3: PDF Parsing Pipeline</h2>
+<ul>
+<li>Parsed scraped reports using <strong>PyMuPDF</strong> and <strong>pdfminer.six</strong>.</li>
+<li>Created quarter-wise document segmenters to split content cleanly.</li>
+<li>Each parsed report was tagged with metadata like: <ul>
+<li><code>year</code></li>
+<li><code>quarter</code></li>
+<li><code>section</code></li>
+<li><code>page_no</code></li>
+</ul>
+</li>
+</ul>
+<p><strong>Code</strong>: <code>backend/parsers/</code>, <code>data_processing/parser.py</code></p>
+<p><strong>Outcome</strong>: Structured, quarter-aware chunks of text from the PDF files.</p>
+<h2 is-upgraded>✅ Step 4: Embedding + Vector Storage</h2>
+<ul>
+<li>Embedded parsed text using <strong>OpenAI embeddings (text-embedding-ada-002)</strong>.</li>
+<li>Used <strong>Pinecone</strong> as the vector database.</li>
+<li>Stored each text chunk with its corresponding metadata for hybrid search.</li>
+</ul>
+<p><strong>Code</strong>: <code>backend/embedding.py</code>, <code>pinecone_index.py</code></p>
+<p><strong>Outcome</strong>: Search-ready vector index with rich metadata.</p>
+<h2 is-upgraded>✅ Step 5: Retrieval Approaches</h2>
+<p>We implemented <strong>three retrieval modes</strong>:</p>
+<ol type="1">
+<li><strong>Naive Retrieval</strong> (keyword search from parsed text)</li>
+<li><strong>Vector Retrieval</strong> (Pinecone similarity search)</li>
+<li><strong>Hybrid Retrieval</strong> (combined and filtered by <code>year</code> and <code>quarter</code>)</li>
+</ol>
+<p><strong>Code</strong>: <code>retriever.py</code></p>
+<p><strong>Outcome</strong>: Accurate and context-aware document retrieval.</p>
+<h2 is-upgraded>✅ Step 6: RAG Answer Generation</h2>
+<ul>
+<li>Combined relevant chunks into a context window.</li>
+<li>Sent the context + question to <strong>OpenAI GPT-4o</strong> via API.</li>
+<li>Returned summarized, clear answers to the user.</li>
+</ul>
+<p><strong>Code</strong>: <code>backend/rag_chain.py</code></p>
+<p><strong>Outcome</strong>: LLM-powered answers grounded in source content.</p>
+<h2 is-upgraded>✅ Step 7: FastAPI Backend</h2>
+<ul>
+<li>Exposed REST endpoints to: <ul>
+<li>Upload new documents</li>
+<li>Trigger embedding &amp; indexing</li>
+<li>Query the system using selected retrieval type</li>
+</ul>
+</li>
+<li>Used environment variables to manage keys and configs securely.</li>
+</ul>
+<p><strong>Code</strong>: <code>backend/api.py</code>, <code>main.py</code></p>
+<p><strong>Outcome</strong>: A modular and testable backend API.</p>
+<h2 is-upgraded>✅ Step 8: Streamlit Frontend</h2>
+<ul>
+<li>Built an intuitive UI for: <ul>
+<li>Uploading PDFs</li>
+<li>Selecting <code>year</code> and <code>quarter</code></li>
+<li>Choosing retrieval type</li>
+<li>Displaying answers with source context</li>
+</ul>
+</li>
+</ul>
+<p><strong>Code</strong>: <code>frontend/app.py</code></p>
+<p><strong>Outcome</strong>: A usable interface for both technical and non-technical users.</p>
+<h2 is-upgraded>✅ Step 9: Containerization with Docker</h2>
+<ul>
+<li>Wrote a <strong>Dockerfile</strong> for each major component (backend, frontend).</li>
+<li>Added a <code>docker-compose.yml</code> to launch services together.</li>
+<li>Used <code>.env</code> files to pass in API keys and credentials.</li>
+</ul>
+<p><strong>Outcome</strong>: One-command deploy with <code>docker-compose up</code>.</p>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="🗂️ Directory Structure" duration="0">
+        <pre><code>LLM-RAG-Pipeline/
+├── airflow/           → DAGs for scraping PDFs
+├── backend/           → FastAPI APIs, RAG logic, embeddings
+├── frontend/          → Streamlit UI
+├── data/              → Downloaded + parsed PDFs
+├── pinecone_index/    → Pinecone initialization
+├── requirements.txt
+└── Dockerfile / docker-compose.yml
+</code></pre>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="🧪 Testing and Validation" duration="0">
+        <ul>
+<li>Used test PDFs and ran different queries to validate: <ul>
+<li>Contextual correctness of RAG output</li>
+<li>Filtering based on year/quarter</li>
+<li>Ranking relevance in hybrid mode</li>
+</ul>
+</li>
+<li>Logged all intermediate results to validate pipeline steps.</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+      <google-codelab-step label="🌱 Future Work" duration="0">
+        <ul>
+<li>Add support for other companies besides NVIDIA</li>
+<li>Integrate LangChain agents for multi-hop QA</li>
+<li>Add PDF-to-graph visual summaries</li>
+<li>Implement user-based session logging &amp; auth</li>
+<li>Deploy to AWS Lambda + ECS with CI/CD</li>
+</ul>
+
+
+      </google-codelab-step>
+    
+  </google-codelab>
+
+  <script src="https://storage.googleapis.com/claat-public/native-shim.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/custom-elements.min.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/prettify.js"></script>
+  <script src="https://storage.googleapis.com/claat-public/codelab-elements.js"></script>
+  <script src="//support.google.com/inapp/api.js"></script>
+
+</body>
+</html>
