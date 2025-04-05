@@ -2,6 +2,8 @@
 
 # 🧠 NVIDIA RAG Pipeline – Spring 2025
 
+Codelab: https://hishitathakkar.github.io/LLM-Powered-Document-Intelligence-RAG-Pipeline-/#0
+
 An end-to-end **Retrieval-Augmented Generation (RAG)** system that automates the ingestion, processing, and retrieval of **NVIDIA quarterly reports** using **Apache Airflow**, multiple **PDF parsers**, vector databases (**Pinecone**, **ChromaDB**), and a user-friendly **Streamlit + FastAPI interface**.
 
 ---
