@@ -31,6 +31,8 @@ def naive_rag_search(query, documents, chunking_strategy="recursive"):
             chunked_docs.extend(semantic_split(doc))
         else:
             raise ValueError("Invalid chunking strategy. Choose from: recursive, token, semantic")
+        
+   
 
     # Compute embeddings and retrieve best match
     doc_embeddings = [compute_embedding(doc) for doc in chunked_docs]

@@ -71,10 +71,13 @@ if page == "File and RAG Method Selection":
 
 
         with col3:
-            rag_method = ["Manual Embeddings", "Pinecone", "ChromaDB"]
+            quarter = ["Q1", "Q2", "Q3", "Q4"]
+            quarters = st.selectbox("Select required Quarters", quarter)
+            rag_method = ["Pinecone", "ChromaDB"]
             selected_rag = st.selectbox("Select a RAG Method", rag_method, index=0)
 
-            params = {"selected_rag": selected_rag}
+
+            params = {"selected_rag": selected_rag, "quarters": quarters}
             response = requests.get(f"{API_BASE_URL}/rag_method", params=params)
 
 
@@ -86,16 +89,16 @@ if page == "File and RAG Method Selection":
 
         col1, col2 = st.columns(2)
 
-        with col1:
-            st.session_state.selected_year = ""
-            year = ["2020", "2021", "2022", "2023", "2024"]
-            selected_year = st.multiselect("Select required Years", year)
-            st.session_state.selected_year = selected_year
+       # with col1:
+           # st.session_state.selected_year = ""
+           # year = ["2020", "2021", "2022", "2023", "2024"]
+            #selected_year = st.multiselect("Select required Years", year)
+            #st.session_state.selected_year = selected_year
 
         with col2:
             st.session_state.selected_quarter = ""
-            quarter = ["Q1", "Q2", "Q3", "Q4"]
-            selected_quarter = st.multiselect("Select required Quarters", quarter)
+            quarters = ["Q1", "Q2", "Q3", "Q4"]
+            selected_quarter = st.multiselect("Select required Quarters", quarters)
             st.session_state.selected_quarter = selected_quarter 
 
 else:
@@ -105,7 +108,7 @@ else:
 
     if st.button("Get a Response") and question:
 
-        params = {"question": question, "selected_year": st.session_state.selected_year, "selected_quarter": st.session_state.selected_quarter}
+        params = {"question": question, "selected_quarter": st.session_state.selected_quarter, "selected_rag":st.session_state.selected_rag}
         response = requests.get(f"{API_BASE_URL}/ask_question", params=params)
 
         st.write(response.json()['choices'][0]['message']['content'])
